@@ -193,14 +193,6 @@
       color: #0b5d4b;
     }
 
-    .tabla-reporte {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 18px 0 25px;
-      font-size: 14px;
-      min-width: 650px;
-    }
-
     .tabla-contenedor {
       width: 100%;
       overflow-x: auto;
@@ -225,7 +217,7 @@
       color: #ffffff;
       padding: 14px 16px;
       text-align: left;
-      font-weight: bold;
+      font-weight: 700;
       white-space: nowrap;
       border-bottom: 3px solid #08483b;
     }
@@ -271,29 +263,6 @@
 
     .tabla-reporte .fecha {
       white-space: nowrap;
-    }
-
-
-    .tabla-reporte th {
-      background: #0b5d4b;
-      color: white;
-      padding: 11px 10px;
-      text-align: left;
-      font-weight: bold;
-    }
-
-    .tabla-reporte td {
-      border: 1px solid #d9dfe2;
-      padding: 10px;
-      vertical-align: top;
-    }
-
-    .tabla-reporte tbody tr:nth-child(even) {
-      background: #f5f8f7;
-    }
-
-    .tabla-reporte tbody tr:hover {
-      background: #eaf3f0;
     }
 
     .grafico-card {
@@ -578,127 +547,205 @@
 
       if (!texto) return "";
 
-      // Quitamos únicamente las líneas de gráficos.
-      const textoLimpio =
-        texto
-          .split("\n")
-          .filter(linea =>
-            !linea.trim().startsWith("GRAFICO|")
-          )
-          .join("\n");
+      // Aseguramos que trabajamos con texto.
+      texto = String(texto);
 
-      // marked.js interpreta correctamente Markdown,
-      // incluyendo títulos, listas y tablas.
-      let html =
-        marked.parse(textoLimpio, {
-          gfm: true,
-          breaks: true
-        });
+      // Quitamos líneas de gráficos: ya decidimos no usar gráficos.
+      texto = texto
+        .split(/\r?\n/)
+        .filter(linea => !linea.trim().startsWith("GRAFICO|"))
+        .join("\n");
 
-      // Envolver cada tabla para permitir desplazamiento horizontal.
-      html =
-        html.replace(
-          /<table>/g,
-          '<div class="tabla-contenedor"><table class="tabla-reporte">'
-        );
+      /*
+       * IMPORTANTE:
+       * Las tablas se convierten aquí manualmente.
+       * Así NO dependemos de que el navegador interprete
+       * correctamente el Markdown de la IA.
+       */
+      const lineas = texto.split(/\r?\n/);
+      const salida = [];
+      let i = 0;
 
-      html =
-        html.replace(
-          /<\/table>/g,
-          "</table></div>"
-        );
+      while (i < lineas.length) {
 
-      // Formatear automáticamente columnas numéricas y fechas.
-      const temporal =
-        document.createElement("div");
+        const linea = lineas[i].trim();
 
-      temporal.innerHTML = html;
-
-      temporal
-        .querySelectorAll("table")
-        .forEach(tabla => {
+        // Detectar una tabla Markdown:
+        // | Columna | Columna |
+        // |---|---|
+        if (
+          i + 1 < lineas.length &&
+          linea.includes("|") &&
+          /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lineas[i + 1])
+        ) {
 
           const encabezados =
-            Array.from(
-              tabla.querySelectorAll("thead th")
-            ).map(th =>
-              normalizarTexto(th.textContent)
+            dividirFilaMarkdown(lineas[i]);
+
+          i += 2;
+
+          const filas = [];
+
+          while (
+            i < lineas.length &&
+            lineas[i].trim().includes("|") &&
+            lineas[i].trim() !== ""
+          ) {
+            filas.push(
+              dividirFilaMarkdown(lineas[i])
             );
+            i++;
+          }
 
-          tabla
-            .querySelectorAll("tbody tr")
-            .forEach(fila => {
+          salida.push(
+            construirTablaHTML(encabezados, filas)
+          );
 
-              Array.from(fila.children)
-                .forEach((celda, indice) => {
+          continue;
+        }
 
-                  const nombre =
-                    encabezados[indice] || "";
+        salida.push(lineas[i]);
+        i++;
+      }
 
-                  const valor =
-                    celda.textContent.trim();
+      const textoSinTablas = salida
+        .filter(item => !item.trim().startsWith("<!--TABLA_HTML_"))
+        .join("\n");
 
-                  if (
-                    nombre.includes("costo") ||
-                    nombre.includes("usd") ||
-                    nombre.includes("monto") ||
-                    nombre.includes("precio")
-                  ) {
+      /*
+       * Los bloques HTML de tabla se mantienen mediante marcadores.
+       */
+      const tablasHTML =
+        salida.filter(item =>
+          item.trim().startsWith("<!--TABLA_HTML_")
+        );
 
-                    const numero =
-                      Number(
-                        valor.replace(/[$,\s]/g, "")
-                      );
+      let htmlResultado = "";
 
-                    if (!isNaN(numero)) {
+      if (
+        window.marked &&
+        typeof window.marked.parse === "function"
+      ) {
+        htmlResultado =
+          marked.parse(textoSinTablas, {
+            gfm: true,
+            breaks: true
+          });
+      } else {
+        htmlResultado =
+          convertirTextoBasico(textoSinTablas);
+      }
 
-                      celda.textContent =
-                        new Intl.NumberFormat(
-                          "en-US",
-                          {
-                            style: "currency",
-                            currency: "USD",
-                            maximumFractionDigits: 0
-                          }
-                        ).format(numero);
+      // Insertar las tablas reales en el lugar correspondiente.
+      tablasHTML.forEach((tabla, indice) => {
 
-                      celda.classList.add("numero");
-                    }
-                  }
+        const marcador =
+          `<!--TABLA_HTML_${indice}-->`;
 
-                  if (nombre.includes("fecha")) {
+        htmlResultado =
+          htmlResultado.replace(
+            marcador,
+            tabla.replace(
+              `<!--TABLA_HTML_${indice}-->`,
+              ""
+            )
+          );
+      });
 
-                    const fecha =
-                      new Date(valor);
+      return htmlResultado;
+    }
 
-                    if (!isNaN(fecha.getTime())) {
 
-                      celda.textContent =
-                        new Intl.DateTimeFormat(
-                          "es-ES",
-                          {
-                            day: "2-digit",
-                            month: "2-digit",
-                            year: "numeric"
-                          }
-                        ).format(fecha);
+    function dividirFilaMarkdown(fila) {
 
-                      celda.classList.add("fecha");
-                    }
-                  }
+      let texto = fila.trim();
 
-                  if (
-                    nombre.includes("numero") ||
-                    nombre.includes("cantidad")
-                  ) {
-                    celda.classList.add("numero");
-                  }
+      if (texto.startsWith("|"))
+        texto = texto.substring(1);
 
-                });
-            });
+      if (texto.endsWith("|"))
+        texto = texto.substring(0, texto.length - 1);
+
+      return texto
+        .split("|")
+        .map(celda => celda.trim());
+    }
+
+
+    function construirTablaHTML(encabezados, filas) {
+
+      const indice =
+        document.querySelectorAll(".tabla-reporte").length;
+
+      let htmlTabla =
+        `<!--TABLA_HTML_${indice}-->
+         <div class="tabla-contenedor">
+         <table class="tabla-reporte">
+         <thead><tr>`;
+
+      encabezados.forEach(encabezado => {
+
+        htmlTabla +=
+          `<th>${formatInline(encabezado)}</th>`;
+
+      });
+
+      htmlTabla +=
+        `</tr></thead><tbody>`;
+
+      filas.forEach(fila => {
+
+        htmlTabla += "<tr>";
+
+        encabezados.forEach((_, columna) => {
+
+          const valor =
+            fila[columna] !== undefined
+              ? fila[columna]
+              : "";
+
+          htmlTabla +=
+            `<td>${formatInline(valor)}</td>`;
+
         });
 
-      return temporal.innerHTML;
+        htmlTabla += "</tr>";
+      });
+
+      htmlTabla +=
+        "</tbody></table></div>";
+
+      return htmlTabla;
+    }
+
+
+    function convertirTextoBasico(texto) {
+
+      return texto
+        .split(/\r?\n/)
+        .map(linea => {
+
+          const limpia = linea.trim();
+
+          if (!limpia)
+            return "";
+
+          if (limpia.startsWith("### "))
+            return `<h3>${formatInline(limpia.substring(4))}</h3>`;
+
+          if (limpia.startsWith("## "))
+            return `<h2>${formatInline(limpia.substring(3))}</h2>`;
+
+          if (limpia.startsWith("# "))
+            return `<h1>${formatInline(limpia.substring(2))}</h1>`;
+
+          if (limpia.startsWith("- "))
+            return `<p>• ${formatInline(limpia.substring(2))}</p>`;
+
+          return `<p>${formatInline(limpia)}</p>`;
+
+        })
+        .join("");
     }
 
 
