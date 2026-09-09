@@ -737,26 +737,84 @@ function crearGrafico(texto) {
 
   if (window.miGrafico) {
     window.miGrafico.destroy();
+    window.miGrafico = null;
   }
 
+  const lineaGrafico = texto
+    .split("\n")
+    .find(linea => linea.trim().startsWith("GRAFICO|"));
+
+  if (!lineaGrafico) return;
+
+  const partes = lineaGrafico.trim().split("|");
+
+  if (partes.length < 4) return;
+
+  const tipoTexto = partes[1].toLowerCase();
+  const titulo = partes[2];
+
+  const tipo = tipoTexto.includes("line")
+    ? "line"
+    : "bar";
+
+  const labels = [];
+  const valores = [];
+
+  for (let i = 3; i < partes.length; i++) {
+
+    const elemento = partes[i].split(":");
+
+    if (elemento.length >= 2) {
+
+      labels.push(elemento[0]);
+
+      valores.push(
+        Number(
+          elemento
+            .slice(1)
+            .join(":")
+            .replace(/[$,\s]/g, "")
+        )
+      );
+
+    }
+  }
+
+  if (!labels.length) return;
+
   window.miGrafico = new Chart(canvas, {
-    type: "bar",
+
+    type: tipo,
+
     data: {
-      labels: ["2022", "2023", "2024", "2025", "2026"],
+      labels: labels,
+
       datasets: [{
         label: "Costo estimado USD",
-        data: [191279695, 755747022, 1229856870, 1091676609, 30129956]
+        data: valores,
+        backgroundColor: "rgba(11, 93, 75, 0.65)",
+        borderColor: "#0b5d4b",
+        borderWidth: 2
       }]
     },
+
     options: {
       responsive: true,
+
       plugins: {
         title: {
           display: true,
-          text: "Costo estimado de proyectos PTAR"
+          text: titulo
+        }
+      },
+
+      scales: {
+        y: {
+          beginAtZero: true
         }
       }
     }
+
   });
 }
 
