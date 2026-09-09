@@ -271,7 +271,9 @@
           class="resultado">
           El resultado de la consulta aparecerá aquí.
         </div>
-
+        <div id="grafico-container" style="margin-top: 25px;">
+  <canvas id="grafico"></canvas>
+</div>
       </div>
 
     </div>
@@ -363,10 +365,14 @@
 
 
         const salida =
-          data.resumen ||
-          data.resultado ||
-          data.output ||
-          JSON.stringify(data, null, 2);
+             data.resumen ||
+             data.resultado ||
+             data.output ||
+             JSON.stringify(data, null, 2);
+
+resultadoEl.textContent = salida;
+
+crearGrafico(salida);
 
 
         resultadoEl.textContent =
@@ -708,6 +714,53 @@
       return div.innerHTML;
 
     }
+
+    function escapeHtml(text) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+
+}
+
+
+// AQUÍ PEGAS crearGrafico()
+
+function crearGrafico(texto) {
+
+  const canvas = document.getElementById("grafico");
+
+  if (!canvas) return;
+
+  if (window.miGrafico) {
+    window.miGrafico.destroy();
+  }
+
+  window.miGrafico = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: ["2022", "2023", "2024", "2025", "2026"],
+      datasets: [{
+        label: "Costo estimado USD",
+        data: [191279695, 755747022, 1229856870, 1091676609, 30129956]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: "Costo estimado de proyectos PTAR"
+        }
+      }
+    }
+  });
+}
+
+</script>
 
   </script>
 
