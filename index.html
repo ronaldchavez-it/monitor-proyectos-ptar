@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Monitor de Proyectos PTAR con IA</title>
+
+  <!-- Librerías para exportar -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    header {
+      background: #0b5d4b;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      font-size: 15px;
+    }
+
+    .contenedor {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 25px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .imagen-panel {
+      text-align: center;
+    }
+
+    .imagen-panel img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .imagen-panel h2 {
+      margin-top: 5px;
+      color: #0b5d4b;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      resize: vertical;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #0b5d4b;
+    }
+
+    .botones {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      border: none;
+      border-radius: 7px;
+      padding: 11px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-principal {
+      background: #0b5d4b;
+      color: white;
+    }
+
+    .btn-principal:hover {
+      background: #08483b;
+    }
+
+    .btn-secundario {
+      background: #e9ecef;
+      color: #222;
+    }
+
+    .btn-secundario:hover {
+      background: #d8dce0;
+    }
+
+    .btn-exportar {
+      background: #1f6f8b;
+      color: white;
+    }
+
+    .resultado {
+      min-height: 400px;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      line-height: 1.6;
+    }
+
+    .resultado-titulo {
+      margin-top: 0;
+      color: #0b5d4b;
+    }
+
+    .estado {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #666;
+      font-size: 13px;
+    }
+
+    @media (max-width: 850px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Monitor de Proyectos PTAR con IA</h1>
+    <p>
+      Consulta y analiza información de proyectos
+      de tratamiento de aguas residuales
+    </p>
+  </header>
+
+  <div class="contenedor">
+
+    <div class="grid">
+
+      <!-- PANEL DE IMAGEN -->
+      <div class="panel imagen-panel">
+
+        <img
+          src="./imagen.jpg"
+          alt="Imagen de proyectos PTAR"
+        >
+
+        <h2>Proyectos PTAR</h2>
+
+        <p>
+          Utiliza inteligencia artificial para consultar,
+          analizar y obtener información de los proyectos
+          registrados.
+        </p>
+
+        <p>
+          Puedes solicitar cálculos, comparaciones,
+          agrupaciones, filtros y resúmenes.
+        </p>
+
+      </div>
+
+
+      <!-- PANEL DE CONSULTA -->
+      <div class="panel">
+
+        <h2 class="resultado-titulo">
+          Consulta al sistema
+        </h2>
+
+        <label for="prompt">
+          Escriba su consulta:
+        </label>
+
+        <textarea
+          id="prompt"
+          placeholder="Ejemplo: Dame un resumen de los proyectos PTAR"
+        ></textarea>
+
+        <div class="botones">
+
+          <button
+            class="btn-principal"
+            onclick="generarResumen()">
+            Analizar consulta
+          </button>
+
+          <button
+            class="btn-secundario"
+            onclick="limpiar()">
+            Limpiar
+          </button>
+
+          <button
+            class="btn-secundario"
+            onclick="imprimirResultado()">
+            Imprimir
+          </button>
+
+          <button
+            class="btn-exportar"
+            onclick="guardarComo()">
+            Guardar como...
+          </button>
+
+        </div>
+
+        <div
+          class="estado"
+          id="estado">
+        </div>
+
+        <h2 class="resultado-titulo">
+          Resultado
+        </h2>
+
+        <div
+          id="resultado"
+          class="resultado">
+          El resultado de la consulta aparecerá aquí.
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <footer>
+    Monitor de Proyectos PTAR con Inteligencia Artificial
+  </footer>
+
+
+  <script>
+
+    // =========================================================
+    // URL DE TU LOGIC APP
+    // =========================================================
+
+    const LOGIC_APP_URL =
+      "https://prod-38.eastus.logic.azure.com:443/workflows/bfdd07c40d094212a0e1e3e4780166e4/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=SZPhjJcCwACHs3tKuGDCN8nUdXYh6byQAYBM1oHnI0o";
+
+
+    // =========================================================
+    // ENVIAR CONSULTA A LOGIC APP
+    // =========================================================
+
+    async function generarResumen() {
+
+      const resultadoEl =
+        document.getElementById("resultado");
+
+      const estadoEl =
+        document.getElementById("estado");
+
+      const prompt =
+        document.getElementById("prompt").value.trim();
+
+
+      if (!prompt) {
+
+        resultadoEl.textContent =
+          "Por favor, ingrese una consulta antes de analizar.";
+
+        estadoEl.textContent = "";
+
+        return;
+      }
+
+
+      resultadoEl.textContent =
+        "Procesando consulta...\n\n" +
+        "Esto puede tardar unos segundos.";
+
+      estadoEl.textContent =
+        "Conectando con Azure Logic Apps...";
+
+
+      try {
+
+        const res = await fetch(
+          LOGIC_APP_URL,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+              prompt: prompt
+            })
+          }
+        );
+
+
+        if (!res.ok) {
+
+          const text =
+            await res.text();
+
+          throw new Error(
+            `HTTP ${res.status}: ${text}`
+          );
+        }
+
+
+        const data =
+          await res.json();
+
+
+        const salida =
+          data.resumen ||
+          data.resultado ||
+          data.output ||
+          JSON.stringify(data, null, 2);
+
+
+        resultadoEl.textContent =
+          salida;
+
+        estadoEl.textContent =
+          "Consulta procesada correctamente.";
+
+      }
+
+      catch (err) {
+
+        resultadoEl.textContent =
+          "ERROR al procesar la consulta:\n\n" +
+          (err?.message || err);
+
+        estadoEl.textContent =
+          "No fue posible procesar la consulta.";
+
+      }
+
+    }
+
+
+    // =========================================================
+    // LIMPIAR
+    // =========================================================
+
+    function limpiar() {
+
+      document.getElementById("prompt").value = "";
+
+      document.getElementById("resultado").textContent =
+        "El resultado de la consulta aparecerá aquí.";
+
+      document.getElementById("estado").textContent = "";
+
+    }
+
+
+    // =========================================================
+    // IMPRIMIR
+    // =========================================================
+
+    function imprimirResultado() {
+
+      const contenido =
+        document.getElementById("resultado").innerText;
+
+
+      const ventana =
+        window.open(
+          "",
+          "_blank",
+          "width=900,height=700"
+        );
+
+
+      ventana.document.write(`
+
+        <html>
+
+        <head>
+
+          <title>Resultado PTAR</title>
+
+          <style>
+
+            body {
+              font-family: Arial, sans-serif;
+              padding: 40px;
+              line-height: 1.6;
+            }
+
+            h1 {
+              color: #0b5d4b;
+            }
+
+            pre {
+              white-space: pre-wrap;
+              font-family: Arial, sans-serif;
+            }
+
+          </style>
+
+        </head>
+
+        <body>
+
+          <h1>Resultado - Proyectos PTAR</h1>
+
+          <pre>${escapeHtml(contenido)}</pre>
+
+        </body>
+
+        </html>
+
+      `);
+
+
+      ventana.document.close();
+
+      ventana.focus();
+
+      ventana.print();
+
+    }
+
+
+    // =========================================================
+    // GUARDAR COMO
+    // =========================================================
+
+    async function guardarComo() {
+
+      const contenido =
+        document.getElementById("resultado").innerText;
+
+
+      if (
+        !contenido ||
+        contenido ===
+        "El resultado de la consulta aparecerá aquí."
+      ) {
+
+        alert(
+          "No hay ningún resultado para guardar."
+        );
+
+        return;
+      }
+
+
+      const formato =
+        prompt(
+          "Escriba el formato:\n\nPDF\nWORD\nMD\nTXT",
+          "PDF"
+        );
+
+
+      if (!formato) return;
+
+
+      const tipo =
+        formato.toUpperCase();
+
+
+      // PDF
+
+      if (tipo === "PDF") {
+
+        const elemento =
+          document.getElementById("resultado");
+
+
+        const opciones = {
+
+          margin: 10,
+
+          filename:
+            "reporte-proyectos-ptar.pdf",
+
+          image: {
+            type: "jpeg",
+            quality: 0.98
+          },
+
+          html2canvas: {
+            scale: 2
+          },
+
+          jsPDF: {
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait"
+          }
+
+        };
+
+
+        html2pdf()
+          .set(opciones)
+          .from(elemento)
+          .save();
+
+
+        return;
+      }
+
+
+      // WORD
+
+      if (tipo === "WORD") {
+
+        const {
+          Document,
+          Packer,
+          Paragraph
+        } = docx;
+
+
+        const lineas =
+          contenido.split("\n");
+
+
+        const paragraphs =
+          lineas.map(
+            linea =>
+              new Paragraph({
+                text: linea
+              })
+          );
+
+
+        const documento =
+          new Document({
+            sections: [
+              {
+                children: paragraphs
+              }
+            ]
+          });
+
+
+        const blob =
+          await Packer.toBlob(
+            documento
+          );
+
+
+        descargarArchivo(
+          blob,
+          "reporte-proyectos-ptar.docx"
+        );
+
+
+        return;
+      }
+
+
+      // MARKDOWN
+
+      if (tipo === "MD") {
+
+        const blob =
+          new Blob(
+            [contenido],
+            {
+              type:
+                "text/markdown;charset=utf-8"
+            }
+          );
+
+
+        descargarArchivo(
+          blob,
+          "reporte-proyectos-ptar.md"
+        );
+
+
+        return;
+      }
+
+
+      // TXT
+
+      if (tipo === "TXT") {
+
+        const blob =
+          new Blob(
+            [contenido],
+            {
+              type:
+                "text/plain;charset=utf-8"
+            }
+          );
+
+
+        descargarArchivo(
+          blob,
+          "reporte-proyectos-ptar.txt"
+        );
+
+
+        return;
+      }
+
+
+      alert(
+        "Formato no válido. Use PDF, WORD, MD o TXT."
+      );
+
+    }
+
+
+    // =========================================================
+    // DESCARGAR ARCHIVO
+    // =========================================================
+
+    function descargarArchivo(
+      blob,
+      nombre
+    ) {
+
+      const url =
+        URL.createObjectURL(blob);
+
+
+      const enlace =
+        document.createElement("a");
+
+
+      enlace.href = url;
+
+      enlace.download = nombre;
+
+      document.body.appendChild(enlace);
+
+      enlace.click();
+
+      enlace.remove();
+
+      URL.revokeObjectURL(url);
+
+    }
+
+
+    // =========================================================
+    // ESCAPAR HTML
+    // =========================================================
+
+    function escapeHtml(text) {
+
+      const div =
+        document.createElement("div");
+
+      div.textContent = text;
+
+      return div.innerHTML;
+
+    }
+
+  </script>
+
+</body>
+</html>
