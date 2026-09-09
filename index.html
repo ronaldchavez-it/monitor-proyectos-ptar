@@ -4,13 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Monitor de Proyectos PTAR con IA</title>
-
-  <!-- Librerías para exportar -->
-<!-- Librerías para exportar -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Monitor de Proyectos PTAR</title>
 
   <style>
     * {
@@ -19,100 +13,131 @@
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f6f8;
-      color: #222;
+      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+      background: #f3f6f5;
+      color: #24302d;
     }
 
     header {
-      background: #0b5d4b;
+      background: linear-gradient(135deg, #0b5d4b, #14745f);
       color: white;
-      padding: 20px;
-      text-align: center;
+      padding: 30px 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,.12);
+    }
+
+    .header-contenido {
+      max-width: 1400px;
+      margin: auto;
     }
 
     header h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 30px;
+      font-weight: 700;
     }
 
     header p {
       margin: 8px 0 0;
+      opacity: .92;
       font-size: 15px;
     }
 
     .contenedor {
-      max-width: 1200px;
-      margin: 30px auto;
+      max-width: 1400px;
+      margin: 28px auto;
       padding: 0 20px;
     }
 
-    .grid {
+    .layout {
       display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 25px;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
     }
 
     .panel {
       background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.07);
+      border: 1px solid #e1e8e5;
     }
 
-    .imagen-panel {
-      text-align: center;
+    .panel-lateral {
+      padding: 22px;
+      position: sticky;
+      top: 20px;
     }
 
-    .imagen-panel img {
+    .panel-lateral img {
       width: 100%;
-      max-height: 260px;
+      max-height: 220px;
       object-fit: cover;
-      border-radius: 10px;
-      margin-bottom: 15px;
+      border-radius: 12px;
+      margin-bottom: 18px;
     }
 
-    .imagen-panel h2 {
-      margin-top: 5px;
+    .panel-lateral h2 {
       color: #0b5d4b;
+      margin: 0 0 10px;
+      font-size: 21px;
+    }
+
+    .panel-lateral p {
+      color: #5f6d68;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .panel-principal {
+      padding: 28px;
+      min-width: 0;
+    }
+
+    .titulo-seccion {
+      color: #0b5d4b;
+      margin: 0 0 16px;
+      font-size: 23px;
     }
 
     label {
       display: block;
-      font-weight: bold;
+      font-weight: 600;
       margin-bottom: 8px;
     }
 
     textarea {
       width: 100%;
-      min-height: 180px;
+      min-height: 130px;
       resize: vertical;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 12px;
+      padding: 14px;
+      border: 1px solid #cfd9d5;
+      border-radius: 10px;
+      font: inherit;
       font-size: 15px;
-      font-family: inherit;
+      line-height: 1.5;
+      background: #fbfcfc;
     }
 
     textarea:focus {
       outline: none;
       border-color: #0b5d4b;
+      box-shadow: 0 0 0 3px rgba(11,93,75,.10);
     }
 
     .botones {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 15px;
+      margin-top: 14px;
     }
 
     button {
-      border: none;
-      border-radius: 7px;
-      padding: 11px 16px;
-      font-size: 14px;
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 17px;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 14px;
     }
 
     .btn-principal {
@@ -125,51 +150,236 @@
     }
 
     .btn-secundario {
-      background: #e9ecef;
-      color: #222;
+      background: #e9efed;
+      color: #26332f;
     }
 
     .btn-secundario:hover {
-      background: #d8dce0;
+      background: #dce5e1;
     }
 
     .btn-exportar {
-      background: #1f6f8b;
+      background: #286f86;
       color: white;
     }
 
-    .resultado {
-      min-height: 400px;
-      background: #fafafa;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 20px;
-      white-space: pre-wrap;
-      overflow-wrap: break-word;
-      line-height: 1.6;
+    .estado {
+      min-height: 20px;
+      margin: 13px 0 5px;
+      font-size: 13px;
+      color: #64716d;
     }
 
-    .resultado-titulo {
-      margin-top: 0;
+    /* REPORTE */
+
+    .reporte {
+      margin-top: 18px;
+      background: #fff;
+      border: 1px solid #dfe7e4;
+      border-radius: 14px;
+      padding: 30px;
+      min-height: 430px;
+      overflow-x: auto;
+    }
+
+    .portada-reporte {
+      border-bottom: 2px solid #0b5d4b;
+      padding-bottom: 18px;
+      margin-bottom: 25px;
+    }
+
+    .portada-reporte h1 {
+      margin: 0 0 7px;
+      color: #0b5d4b;
+      font-size: 28px;
+    }
+
+    .portada-reporte .subtitulo {
+      color: #64716d;
+      font-size: 14px;
+    }
+
+    .reporte h1 {
+      color: #0b5d4b;
+      font-size: 27px;
+      margin: 25px 0 12px;
+    }
+
+    .reporte h2 {
+      color: #0b5d4b;
+      font-size: 21px;
+      margin: 27px 0 10px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid #d8e3df;
+    }
+
+    .reporte h3 {
+      color: #176d5b;
+      font-size: 18px;
+      margin: 22px 0 8px;
+    }
+
+    .reporte p {
+      line-height: 1.65;
+      margin: 9px 0;
+    }
+
+    .reporte ul,
+    .reporte ol {
+      line-height: 1.65;
+      padding-left: 25px;
+    }
+
+    .reporte strong {
       color: #0b5d4b;
     }
 
-    .estado {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #666;
+    .reporte hr {
+      border: 0;
+      border-top: 1px solid #dfe7e4;
+      margin: 25px 0;
+    }
+
+    .tabla-contenedor {
+      width: 100%;
+      overflow-x: auto;
+      margin: 16px 0 26px;
+      border: 1px solid #d9e3df;
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th {
+      background: #0b5d4b;
+      color: white;
+      padding: 12px 11px;
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    td {
+      border-top: 1px solid #e1e7e5;
+      padding: 11px;
+      vertical-align: top;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f5f8f7;
+    }
+
+    tbody tr:hover {
+      background: #e9f2ef;
+    }
+
+    .numero {
+      text-align: right;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fecha {
+      white-space: nowrap;
+    }
+
+    .indicador {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      background: #e8f2ef;
+      color: #0b5d4b;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .consulta-box {
+      background: #f4f8f6;
+      border-left: 4px solid #0b5d4b;
+      border-radius: 7px;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      color: #465650;
+      font-size: 14px;
+    }
+
+    .sin-datos {
+      color: #7a8782;
+      font-style: italic;
+    }
+
+    code {
+      background: #eef2f0;
+      padding: 2px 5px;
+      border-radius: 4px;
     }
 
     footer {
       text-align: center;
+      color: #71807b;
       padding: 25px;
-      color: #666;
       font-size: 13px;
     }
 
-    @media (max-width: 850px) {
-      .grid {
+    @media (max-width: 900px) {
+      .layout {
         grid-template-columns: 1fr;
+      }
+
+      .panel-lateral {
+        position: static;
+      }
+
+      .panel-principal {
+        padding: 20px;
+      }
+
+      .reporte {
+        padding: 20px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      header,
+      .panel-lateral,
+      .titulo-seccion,
+      textarea,
+      label,
+      .botones,
+      .estado,
+      footer {
+        display: none !important;
+      }
+
+      .contenedor,
+      .layout,
+      .panel,
+      .panel-principal {
+        display: block;
+        margin: 0;
+        padding: 0;
+        max-width: none;
+        box-shadow: none;
+        border: 0;
+      }
+
+      .reporte {
+        border: 0;
+        padding: 0;
+        margin: 0;
+      }
+
+      table {
+        font-size: 11px;
       }
     }
   </style>
@@ -178,63 +388,53 @@
 <body>
 
   <header>
-    <h1>Monitor de Proyectos PTAR con IA</h1>
-    <p>
-      Consulta y analiza información de proyectos
-      de tratamiento de aguas residuales
-    </p>
+    <div class="header-contenido">
+      <h1>Monitor de Proyectos PTAR</h1>
+      <p>Consulta y generación de reportes mediante Inteligencia Artificial</p>
+    </div>
   </header>
 
-  <div class="contenedor">
+  <main class="contenedor">
 
-    <div class="grid">
+    <div class="layout">
 
-      <!-- PANEL DE IMAGEN -->
-      <div class="panel imagen-panel">
+      <aside class="panel panel-lateral">
 
-        <img
-          src="./imagen.JPG"
-          alt="Imagen de proyectos PTAR"
-        >
+        <img src="./imagen.JPG" alt="Proyectos PTAR">
 
         <h2>Proyectos PTAR</h2>
 
         <p>
-          Utiliza inteligencia artificial para consultar,
-          analizar y obtener información de los proyectos
-          registrados.
+          Consulte la información registrada de los proyectos,
+          solicite análisis, comparaciones, cálculos,
+          agrupaciones y reportes.
         </p>
 
         <p>
-          Puedes solicitar cálculos, comparaciones,
-          agrupaciones, filtros y resúmenes.
+          La información presentada corresponde a los datos
+          proporcionados por el sistema.
         </p>
 
-      </div>
+      </aside>
 
 
-      <!-- PANEL DE CONSULTA -->
-      <div class="panel">
+      <section class="panel panel-principal">
 
-        <h2 class="resultado-titulo">
-          Consulta al sistema
-        </h2>
+        <h2 class="titulo-seccion">Consulta</h2>
 
-        <label for="prompt">
-          Escriba su consulta:
-        </label>
+        <label for="prompt">Escriba su consulta</label>
 
         <textarea
           id="prompt"
-          placeholder="Ejemplo: Dame un resumen de los proyectos PTAR"
+          placeholder="Ejemplo: Genera un reporte de los proyectos por provincia, mostrando proyecto, fecha y costo estimado."
         ></textarea>
 
         <div class="botones">
 
           <button
             class="btn-principal"
-            onclick="generarResumen()">
-            Analizar consulta
+            onclick="generarReporte()">
+            Generar reporte
           </button>
 
           <button
@@ -245,41 +445,40 @@
 
           <button
             class="btn-secundario"
-            onclick="imprimirResultado()">
+            onclick="imprimirReporte()">
             Imprimir
           </button>
 
           <button
             class="btn-exportar"
-            onclick="guardarComo()">
-            Guardar como...
+            onclick="guardarPDF()">
+            Guardar PDF
           </button>
 
         </div>
 
-        <div
-          class="estado"
-          id="estado">
+        <div id="estado" class="estado"></div>
+
+        <div id="resultado" class="reporte">
+
+          <div class="portada-reporte">
+            <h1>Reporte de Proyectos PTAR</h1>
+            <div class="subtitulo">
+              El resultado de la consulta aparecerá aquí.
+            </div>
+          </div>
+
+          <p class="sin-datos">
+            Escriba una consulta para generar el reporte.
+          </p>
+
         </div>
 
-        <h2 class="resultado-titulo">
-          Resultado
-        </h2>
-
-        <div
-          id="resultado"
-          class="resultado">
-          El resultado de la consulta aparecerá aquí.
-        </div>
-        <div id="grafico-container" style="margin-top: 25px;">
-  <canvas id="grafico"></canvas>
-</div>
-      </div>
+      </section>
 
     </div>
 
-  </div>
-
+  </main>
 
   <footer>
     Monitor de Proyectos PTAR con Inteligencia Artificial
@@ -288,538 +487,757 @@
 
   <script>
 
-    // =========================================================
-    // URL DE TU LOGIC APP
-    // =========================================================
-
+    /*
+      IMPORTANTE:
+      Pega aquí EXACTAMENTE la misma URL de tu Logic App
+      que utilizas actualmente.
+    */
     const LOGIC_APP_URL =
       "https://prod-38.eastus.logic.azure.com:443/workflows/bfdd07c40d094212a0e1e3e4780166e4/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=SZPhjJcCwACHs3tKuGDCN8nUdXYh6byQAYBM1oHnI0o";
 
 
-    // =========================================================
-    // ENVIAR CONSULTA A LOGIC APP
-    // =========================================================
-
-    async function generarResumen() {
-
-      const resultadoEl =
-        document.getElementById("resultado");
-
-      const estadoEl =
-        document.getElementById("estado");
+    async function generarReporte() {
 
       const prompt =
         document.getElementById("prompt").value.trim();
 
+      const resultado =
+        document.getElementById("resultado");
+
+      const estado =
+        document.getElementById("estado");
+
 
       if (!prompt) {
 
-        resultadoEl.textContent =
-          "Por favor, ingrese una consulta antes de analizar.";
-
-        estadoEl.textContent = "";
+        resultado.innerHTML = `
+          <p class="sin-datos">
+            Escriba una consulta para generar el reporte.
+          </p>
+        `;
 
         return;
       }
 
 
-      resultadoEl.textContent =
-        "Procesando consulta...\n\n" +
-        "Esto puede tardar unos segundos.";
+      if (
+        LOGIC_APP_URL ===
+        "PEGA_AQUI_TU_URL_DE_LOGIC_APP"
+      ) {
 
-      estadoEl.textContent =
-        "Conectando con Azure Logic Apps...";
+        resultado.innerHTML = `
+          <h2>Configuración pendiente</h2>
+          <p>
+            Debe colocar la URL de su Logic App en
+            <code>LOGIC_APP_URL</code>.
+          </p>
+        `;
+
+        return;
+      }
+
+
+      resultado.innerHTML = `
+        <div class="portada-reporte">
+          <h1>Generando reporte...</h1>
+          <div class="subtitulo">
+            Procesando la consulta con inteligencia artificial.
+          </div>
+        </div>
+      `;
+
+      estado.textContent =
+        "Consultando información...";
 
 
       try {
 
-        const res = await fetch(
-          LOGIC_APP_URL,
-          {
-            method: "POST",
+        const respuesta =
+          await fetch(
+            LOGIC_APP_URL,
+            {
+              method: "POST",
 
-            headers: {
-              "Content-Type": "application/json"
-            },
+              headers: {
+                "Content-Type": "application/json"
+              },
 
-            body: JSON.stringify({
-              prompt: prompt
-            })
-          }
-        );
+              body: JSON.stringify({
+                prompt: prompt
+              })
+            }
+          );
 
 
-        if (!res.ok) {
+        if (!respuesta.ok) {
 
-          const text =
-            await res.text();
+          const detalle =
+            await respuesta.text();
 
           throw new Error(
-            `HTTP ${res.status}: ${text}`
+            "HTTP " +
+            respuesta.status +
+            ": " +
+            detalle
           );
         }
 
 
         const data =
-          await res.json();
+          await respuesta.json();
 
 
         const salida =
-             data.resumen ||
-             data.resultado ||
-             data.output ||
-             JSON.stringify(data, null, 2);
-
-resultadoEl.textContent = salida;
-
-crearGrafico(salida);
+          data.resumen ||
+          data.resultado ||
+          data.output ||
+          "";
 
 
-        resultadoEl.textContent =
-          salida;
+        if (!salida) {
 
-        estadoEl.textContent =
-          "Consulta procesada correctamente.";
+          throw new Error(
+            "La respuesta no contiene información."
+          );
+
+        }
+
+
+        resultado.innerHTML =
+          construirReporte(salida, prompt);
+
+
+        estado.textContent =
+          "Reporte generado correctamente.";
 
       }
 
-      catch (err) {
+      catch (error) {
 
-        resultadoEl.textContent =
-          "ERROR al procesar la consulta:\n\n" +
-          (err?.message || err);
+        resultado.innerHTML = `
+          <div class="portada-reporte">
+            <h1>Error</h1>
+          </div>
 
-        estadoEl.textContent =
-          "No fue posible procesar la consulta.";
+          <p>
+            ${escapeHtml(
+              error.message || String(error)
+            )}
+          </p>
+        `;
+
+        estado.textContent =
+          "No fue posible generar el reporte.";
 
       }
 
     }
 
 
-    // =========================================================
-    // LIMPIAR
-    // =========================================================
+    function construirReporte(texto, consulta) {
 
-    function limpiar() {
+      /*
+        Eliminamos cualquier línea GRAFICO porque
+        decidimos trabajar únicamente con reportes y tablas.
+      */
 
-      document.getElementById("prompt").value = "";
+      const textoLimpio =
+        texto
+          .split("\n")
+          .filter(linea =>
+            !linea.trim().startsWith("GRAFICO|")
+          )
+          .join("\n");
 
-      document.getElementById("resultado").textContent =
-        "El resultado de la consulta aparecerá aquí.";
-
-      document.getElementById("estado").textContent = "";
-
-    }
-
-
-    // =========================================================
-    // IMPRIMIR
-    // =========================================================
-
-    function imprimirResultado() {
 
       const contenido =
-        document.getElementById("resultado").innerText;
+        markdownToHtml(textoLimpio);
 
 
-      const ventana =
-        window.open(
-          "",
-          "_blank",
-          "width=900,height=700"
+      return `
+
+        <div class="portada-reporte">
+
+          <h1>
+            Reporte de Proyectos PTAR
+          </h1>
+
+          <div class="subtitulo">
+            Reporte generado mediante Inteligencia Artificial
+          </div>
+
+        </div>
+
+        <div class="consulta-box">
+
+          <strong>Consulta realizada:</strong><br>
+
+          ${escapeHtml(consulta)}
+
+        </div>
+
+        ${contenido}
+
+      `;
+
+    }
+
+
+    function markdownToHtml(texto) {
+
+      const lineas =
+        texto.split(/\r?\n/);
+
+      let html = "";
+
+      let i = 0;
+
+
+      while (i < lineas.length) {
+
+        const linea =
+          lineas[i].trim();
+
+
+        if (!linea) {
+
+          i++;
+          continue;
+
+        }
+
+
+        /* Separador */
+
+        if (/^---+$/.test(linea)) {
+
+          html += "<hr>";
+
+          i++;
+          continue;
+
+        }
+
+
+        /* Encabezados */
+
+        if (linea.startsWith("### ")) {
+
+          html +=
+            "<h3>" +
+            formatInline(linea.substring(4)) +
+            "</h3>";
+
+          i++;
+          continue;
+
+        }
+
+        if (linea.startsWith("## ")) {
+
+          html +=
+            "<h2>" +
+            formatInline(linea.substring(3)) +
+            "</h2>";
+
+          i++;
+          continue;
+
+        }
+
+        if (linea.startsWith("# ")) {
+
+          html +=
+            "<h1>" +
+            formatInline(linea.substring(2)) +
+            "</h1>";
+
+          i++;
+          continue;
+
+        }
+
+
+        /* Tabla Markdown */
+
+        if (
+          linea.includes("|") &&
+          i + 1 < lineas.length &&
+          /^\s*\|?\s*:?-{3,}/.test(
+            lineas[i + 1]
+          )
+        ) {
+
+          const tabla =
+            leerTabla(lineas, i);
+
+          html += tabla.html;
+
+          i = tabla.siguiente;
+
+          continue;
+
+        }
+
+
+        /* Lista */
+
+        if (/^[-*]\s+/.test(linea)) {
+
+          html += "<ul>";
+
+          while (
+            i < lineas.length &&
+            /^[-*]\s+/.test(
+              lineas[i].trim()
+            )
+          ) {
+
+            html +=
+              "<li>" +
+              formatInline(
+                lineas[i]
+                  .trim()
+                  .replace(/^[-*]\s+/, "")
+              ) +
+              "</li>";
+
+            i++;
+
+          }
+
+          html += "</ul>";
+
+          continue;
+
+        }
+
+
+        /* Lista numerada */
+
+        if (/^\d+\.\s+/.test(linea)) {
+
+          html += "<ol>";
+
+          while (
+            i < lineas.length &&
+            /^\d+\.\s+/.test(
+              lineas[i].trim()
+            )
+          ) {
+
+            html +=
+              "<li>" +
+              formatInline(
+                lineas[i]
+                  .trim()
+                  .replace(/^\d+\.\s+/, "")
+              ) +
+              "</li>";
+
+            i++;
+
+          }
+
+          html += "</ol>";
+
+          continue;
+
+        }
+
+
+        /* Párrafo */
+
+        let parrafo = linea;
+
+        i++;
+
+        while (
+          i < lineas.length &&
+          lineas[i].trim() &&
+          !lineas[i].trim().startsWith("#") &&
+          !lineas[i].trim().startsWith("- ") &&
+          !lineas[i].trim().startsWith("* ") &&
+          !lineas[i].trim().includes("|")
+        ) {
+
+          parrafo +=
+            " " +
+            lineas[i].trim();
+
+          i++;
+
+        }
+
+
+        html +=
+          "<p>" +
+          formatInline(parrafo) +
+          "</p>";
+
+      }
+
+
+      return html;
+
+    }
+
+
+    function leerTabla(lineas, inicio) {
+
+      const encabezados =
+        separarCeldas(
+          lineas[inicio]
         );
 
 
-      ventana.document.write(`
+      const filas = [];
 
-        <html>
+      let i =
+        inicio + 2;
 
-        <head>
 
-          <title>Resultado PTAR</title>
+      while (
+        i < lineas.length &&
+        lineas[i].trim() &&
+        lineas[i].includes("|")
+      ) {
 
-          <style>
+        const fila =
+          separarCeldas(
+            lineas[i]
+          );
 
-            body {
-              font-family: Arial, sans-serif;
-              padding: 40px;
-              line-height: 1.6;
+        if (fila.length) {
+          filas.push(fila);
+        }
+
+        i++;
+
+      }
+
+
+      let html =
+        '<div class="tabla-contenedor">' +
+        '<table>' +
+        '<thead><tr>';
+
+
+      encabezados.forEach(
+        encabezado => {
+
+          html +=
+            "<th>" +
+            formatInline(encabezado) +
+            "</th>";
+
+        }
+      );
+
+
+      html +=
+        "</tr></thead><tbody>";
+
+
+      filas.forEach(
+        fila => {
+
+          html += "<tr>";
+
+
+          encabezados.forEach(
+            (_, indice) => {
+
+              const valor =
+                fila[indice] ?? "";
+
+
+              html +=
+                formatearCelda(
+                  encabezados[indice],
+                  valor
+                );
+
             }
-
-            h1 {
-              color: #0b5d4b;
-            }
-
-            pre {
-              white-space: pre-wrap;
-              font-family: Arial, sans-serif;
-            }
-
-          </style>
-
-        </head>
-
-        <body>
-
-          <h1>Resultado - Proyectos PTAR</h1>
-
-          <pre>${escapeHtml(contenido)}</pre>
-
-        </body>
-
-        </html>
-
-      `);
+          );
 
 
-      ventana.document.close();
+          html += "</tr>";
 
-      ventana.focus();
+        }
+      );
 
-      ventana.print();
+
+      html +=
+        "</tbody></table></div>";
+
+
+      return {
+        html: html,
+        siguiente: i
+      };
 
     }
 
 
-    // =========================================================
-    // GUARDAR COMO
-    // =========================================================
+    function separarCeldas(linea) {
 
-    async function guardarComo() {
+      return linea
+        .trim()
+        .replace(/^\|/, "")
+        .replace(/\|$/, "")
+        .split("|")
+        .map(
+          celda => celda.trim()
+        );
 
-      const contenido =
-        document.getElementById("resultado").innerText;
+    }
+
+
+    function formatearCelda(
+      encabezado,
+      valor
+    ) {
+
+      const texto =
+        String(valor).trim();
+
+
+      const nombreColumna =
+        encabezado
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+
+
+      /* Moneda */
+
+      if (
+        nombreColumna.includes("costo") ||
+        nombreColumna.includes("usd") ||
+        nombreColumna.includes("precio") ||
+        nombreColumna.includes("monto")
+      ) {
+
+        const numero =
+          convertirNumero(texto);
+
+
+        if (!isNaN(numero)) {
+
+          return `
+            <td class="numero">
+              ${formatearMoneda(numero)}
+            </td>
+          `;
+
+        }
+
+      }
+
+
+      /* Fechas */
+
+      if (
+        nombreColumna.includes("fecha")
+      ) {
+
+        const fecha =
+          formatearFecha(texto);
+
+
+        return `
+          <td class="fecha">
+            ${escapeHtml(fecha)}
+          </td>
+        `;
+
+      }
+
+
+      return `
+        <td>
+          ${formatInline(texto)}
+        </td>
+      `;
+
+    }
+
+
+    function convertirNumero(valor) {
+
+      const limpio =
+        String(valor)
+          .replace(/[$,\s]/g, "");
+
+      return Number(limpio);
+
+    }
+
+
+    function formatearMoneda(numero) {
+
+      return new Intl.NumberFormat(
+        "en-US",
+        {
+          style: "currency",
+          currency: "USD",
+          maximumFractionDigits: 0
+        }
+      ).format(numero);
+
+    }
+
+
+    function formatearFecha(valor) {
+
+      const fecha =
+        new Date(valor);
 
 
       if (
-        !contenido ||
-        contenido ===
-        "El resultado de la consulta aparecerá aquí."
+        isNaN(fecha.getTime())
       ) {
 
-        alert(
-          "No hay ningún resultado para guardar."
-        );
+        return valor;
 
-        return;
       }
 
 
-      const formato =
-        prompt(
-          "Escriba el formato:\n\nPDF\nWORD\nMD\nTXT",
-          "PDF"
-        );
-
-
-      if (!formato) return;
-
-
-      const tipo =
-        formato.toUpperCase();
-
-
-      // PDF
-
-      if (tipo === "PDF") {
-
-        const elemento =
-          document.getElementById("resultado");
-
-
-        const opciones = {
-
-          margin: 10,
-
-          filename:
-            "reporte-proyectos-ptar.pdf",
-
-          image: {
-            type: "jpeg",
-            quality: 0.98
-          },
-
-          html2canvas: {
-            scale: 2
-          },
-
-          jsPDF: {
-            unit: "mm",
-            format: "a4",
-            orientation: "portrait"
-          }
-
-        };
-
-
-        html2pdf()
-          .set(opciones)
-          .from(elemento)
-          .save();
-
-
-        return;
-      }
-
-
-      // WORD
-
-      if (tipo === "WORD") {
-
-        const {
-          Document,
-          Packer,
-          Paragraph
-        } = docx;
-
-
-        const lineas =
-          contenido.split("\n");
-
-
-        const paragraphs =
-          lineas.map(
-            linea =>
-              new Paragraph({
-                text: linea
-              })
-          );
-
-
-        const documento =
-          new Document({
-            sections: [
-              {
-                children: paragraphs
-              }
-            ]
-          });
-
-
-        const blob =
-          await Packer.toBlob(
-            documento
-          );
-
-
-        descargarArchivo(
-          blob,
-          "reporte-proyectos-ptar.docx"
-        );
-
-
-        return;
-      }
-
-
-      // MARKDOWN
-
-      if (tipo === "MD") {
-
-        const blob =
-          new Blob(
-            [contenido],
-            {
-              type:
-                "text/markdown;charset=utf-8"
-            }
-          );
-
-
-        descargarArchivo(
-          blob,
-          "reporte-proyectos-ptar.md"
-        );
-
-
-        return;
-      }
-
-
-      // TXT
-
-      if (tipo === "TXT") {
-
-        const blob =
-          new Blob(
-            [contenido],
-            {
-              type:
-                "text/plain;charset=utf-8"
-            }
-          );
-
-
-        descargarArchivo(
-          blob,
-          "reporte-proyectos-ptar.txt"
-        );
-
-
-        return;
-      }
-
-
-      alert(
-        "Formato no válido. Use PDF, WORD, MD o TXT."
-      );
+      return new Intl.DateTimeFormat(
+        "es-ES",
+        {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        }
+      ).format(fecha);
 
     }
 
 
-    // =========================================================
-    // DESCARGAR ARCHIVO
-    // =========================================================
+    function formatInline(texto) {
 
-    function descargarArchivo(
-      blob,
-      nombre
-    ) {
-
-      const url =
-        URL.createObjectURL(blob);
+      let seguro =
+        escapeHtml(texto);
 
 
-      const enlace =
-        document.createElement("a");
+      seguro =
+        seguro.replace(
+          /\*\*(.*?)\*\*/g,
+          "<strong>$1</strong>"
+        );
 
 
-      enlace.href = url;
+      seguro =
+        seguro.replace(
+          /`([^`]+)`/g,
+          "<code>$1</code>"
+        );
 
-      enlace.download = nombre;
 
-      document.body.appendChild(enlace);
+      seguro =
+        seguro.replace(
+          /\*(.*?)\*/g,
+          "<em>$1</em>"
+        );
 
-      enlace.click();
 
-      enlace.remove();
-
-      URL.revokeObjectURL(url);
+      return seguro;
 
     }
 
 
-    // =========================================================
-    // ESCAPAR HTML
-    // =========================================================
-
-    function escapeHtml(text) {
+    function escapeHtml(texto) {
 
       const div =
         document.createElement("div");
 
-      div.textContent = text;
+      div.textContent =
+        texto;
 
       return div.innerHTML;
 
     }
 
-    function escapeHtml(text) {
 
-  const div =
-    document.createElement("div");
+    function limpiar() {
 
-  div.textContent = text;
-
-  return div.innerHTML;
-
-}
+      document.getElementById(
+        "prompt"
+      ).value = "";
 
 
-// AQUÍ PEGAS crearGrafico()
+      document.getElementById(
+        "resultado"
+      ).innerHTML = `
 
-function crearGrafico(texto) {
+        <div class="portada-reporte">
 
-  const canvas = document.getElementById("grafico");
+          <h1>
+            Reporte de Proyectos PTAR
+          </h1>
 
-  if (!canvas) return;
+          <div class="subtitulo">
+            El resultado de la consulta aparecerá aquí.
+          </div>
 
-  if (window.miGrafico) {
-    window.miGrafico.destroy();
-    window.miGrafico = null;
-  }
+        </div>
 
-  const lineasGrafico = texto
-    .split("\n")
-    .filter(linea => linea.trim().startsWith("GRAFICO|"));
+        <p class="sin-datos">
+          Escriba una consulta para generar el reporte.
+        </p>
 
-  if (!lineasGrafico.length) return;
+      `;
 
-  const lineaGrafico = lineasGrafico[0].trim();
 
-  const partes = lineaGrafico.split("|");
+      document.getElementById(
+        "estado"
+      ).textContent = "";
 
-  if (partes.length < 4) return;
-
-  const tipoTexto = partes[1].toLowerCase();
-  const titulo = partes[2];
-
-  const tipo = tipoTexto.includes("line")
-    ? "line"
-    : "bar";
-
-  const labels = [];
-  const valores = [];
-
-  for (let i = 3; i < partes.length; i++) {
-
-    const posicion = partes[i].lastIndexOf(":");
-
-    if (posicion === -1) continue;
-
-    const etiqueta = partes[i].substring(0, posicion);
-    const valorTexto = partes[i].substring(posicion + 1);
-
-    const valor = Number(
-      valorTexto.replace(/[$,\s]/g, "")
-    );
-
-    if (!isNaN(valor)) {
-      labels.push(etiqueta);
-      valores.push(valor);
-    }
-  }
-
-  if (!labels.length) return;
-
-  window.miGrafico = new Chart(canvas, {
-
-    type: tipo,
-
-    data: {
-      labels: labels,
-
-      datasets: [{
-        label: titulo,
-        data: valores,
-        borderWidth: 2
-      }]
-    },
-
-    options: {
-      responsive: true,
-
-      plugins: {
-        title: {
-          display: true,
-          text: titulo
-        }
-      },
-
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
     }
 
-  });
-}
 
-</script>
+    function imprimirReporte() {
+
+      window.print();
+
+    }
+
+
+    function guardarPDF() {
+
+      /*
+        Se utiliza la función nativa de impresión del navegador.
+        Desde allí se puede seleccionar "Guardar como PDF".
+      */
+
+      window.print();
+
+    }
+
+
+    document
+      .getElementById("prompt")
+      .addEventListener(
+        "keydown",
+        function(event) {
+
+          if (
+            event.ctrlKey &&
+            event.key === "Enter"
+          ) {
+
+            generarReporte();
+
+          }
+
+        }
+      );
 
   </script>
 
 </body>
 </html>
+
+
