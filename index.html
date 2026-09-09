@@ -21,11 +21,11 @@
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
       background: #f4f6f8;
-      color: #222;
+      color: #26332f;
     }
 
     header {
-      background: #0b5d4b;
+      background: linear-gradient(135deg, #0b5d4b, #08745c);
       color: white;
       padding: 28px 20px;
       text-align: center;
@@ -34,6 +34,7 @@
     header h1 {
       margin: 0;
       font-size: 30px;
+      letter-spacing: 0.2px;
     }
 
     header p {
@@ -81,6 +82,15 @@
       color: #0b5d4b;
     }
 
+    .imagen-panel h2 {
+      margin: 8px 0 18px;
+    }
+
+    .imagen-panel p {
+      line-height: 1.45;
+      margin: 15px 0;
+    }
+
     label {
       display: block;
       font-weight: bold;
@@ -96,11 +106,13 @@
       padding: 12px;
       font-size: 15px;
       font-family: inherit;
+      line-height: 1.5;
     }
 
     textarea:focus {
       outline: none;
       border-color: #0b5d4b;
+      box-shadow: 0 0 0 3px rgba(11, 93, 75, 0.10);
     }
 
     .botones {
@@ -117,6 +129,11 @@
       font-size: 14px;
       cursor: pointer;
       font-weight: bold;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
     }
 
     .btn-principal {
@@ -142,6 +159,10 @@
       color: white;
     }
 
+    .btn-exportar:hover {
+      background: #185a70;
+    }
+
     .estado {
       margin-top: 12px;
       font-size: 13px;
@@ -155,90 +176,123 @@
       background: white;
       border: 1px solid #ddd;
       border-radius: 12px;
-      padding: 28px;
+      padding: 30px;
       overflow-x: auto;
-      line-height: 1.6;
+      line-height: 1.65;
+      color: #29332f;
     }
 
     .reporte h1 {
       color: #0b5d4b;
-      font-size: 27px;
+      font-size: 28px;
       border-bottom: 3px solid #0b5d4b;
       padding-bottom: 10px;
-      margin-top: 0;
+      margin: 0 0 20px;
     }
 
     .reporte h2 {
       color: #0b5d4b;
-      margin-top: 28px;
-      padding-bottom: 6px;
+      font-size: 22px;
+      margin-top: 30px;
+      margin-bottom: 14px;
+      padding-bottom: 7px;
       border-bottom: 1px solid #d7e3df;
     }
 
     .reporte h3 {
       color: #176d5b;
-      margin-top: 22px;
+      font-size: 18px;
+      margin-top: 24px;
+      margin-bottom: 10px;
     }
 
     .reporte p {
-      margin: 10px 0;
+      margin: 11px 0;
     }
 
     .reporte ul,
     .reporte ol {
-      padding-left: 25px;
+      padding-left: 27px;
+      margin: 12px 0;
+    }
+
+    .reporte li {
+      margin: 6px 0;
     }
 
     .reporte strong {
       color: #0b5d4b;
+      font-weight: 700;
     }
+
+    .reporte em {
+      color: #53635e;
+    }
+
+    .reporte code {
+      background: #eef3f1;
+      border-radius: 5px;
+      padding: 2px 6px;
+      font-family: Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    .reporte blockquote {
+      margin: 18px 0;
+      padding: 12px 18px;
+      border-left: 4px solid #0b5d4b;
+      background: #f3f8f6;
+      color: #53635e;
+    }
+
+    /* ===== TABLAS ===== */
 
     .tabla-contenedor {
       width: 100%;
       overflow-x: auto;
       margin: 22px 0 30px;
       border: 1px solid #d2ded9;
-      border-radius: 14px;
-      box-shadow: 0 6px 18px rgba(11, 93, 75, 0.09);
-      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 5px 16px rgba(11, 93, 75, 0.08);
+      background: #fff;
     }
 
     .tabla-reporte {
       width: 100%;
-      min-width: 760px;
+      min-width: 700px;
       border-collapse: separate;
       border-spacing: 0;
       font-size: 14px;
-      background: #ffffff;
+      background: #fff;
     }
 
     .tabla-reporte th {
       background: linear-gradient(135deg, #0b5d4b, #14745f);
-      color: #ffffff;
+      color: #fff;
       padding: 14px 16px;
       text-align: left;
-      font-weight: 700;
+      font-weight: bold;
       white-space: nowrap;
       border-bottom: 3px solid #08483b;
     }
 
     .tabla-reporte th:first-child {
-      border-top-left-radius: 13px;
+      border-top-left-radius: 11px;
     }
 
     .tabla-reporte th:last-child {
-      border-top-right-radius: 13px;
+      border-top-right-radius: 11px;
     }
 
     .tabla-reporte td {
-      padding: 13px 16px;
+      padding: 12px 16px;
       border-bottom: 1px solid #e2e9e6;
       vertical-align: middle;
       color: #34423e;
     }
 
     .tabla-reporte tbody tr:nth-child(even) {
-      background: #f4f8f6;
+      background: #f5f9f7;
     }
 
     .tabla-reporte tbody tr:hover {
@@ -264,6 +318,8 @@
     .tabla-reporte .fecha {
       white-space: nowrap;
     }
+
+    /* ===== GRÁFICOS ===== */
 
     .grafico-card {
       margin-top: 28px;
@@ -317,6 +373,21 @@
 
       .grafico-area {
         height: 380px;
+      }
+
+      .reporte {
+        padding: 20px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .reporte {
+        border: none;
+        box-shadow: none;
       }
     }
   </style>
@@ -430,7 +501,6 @@
     Monitor de Proyectos PTAR con Inteligencia Artificial
   </footer>
 
-
   <script>
 
     // =========================================================
@@ -517,10 +587,6 @@
           markdownToHtml(salida);
 
 
-        // La presentación se realiza como reporte y tablas.
-        // No se generan gráficos.
-
-
         estadoEl.textContent =
           "Consulta procesada correctamente.";
 
@@ -547,205 +613,127 @@
 
       if (!texto) return "";
 
-      // Aseguramos que trabajamos con texto.
-      texto = String(texto);
+      // Quitamos únicamente las líneas de gráficos.
+      const textoLimpio =
+        texto
+          .split("\n")
+          .filter(linea =>
+            !linea.trim().startsWith("GRAFICO|")
+          )
+          .join("\n");
 
-      // Quitamos líneas de gráficos: ya decidimos no usar gráficos.
-      texto = texto
-        .split(/\r?\n/)
-        .filter(linea => !linea.trim().startsWith("GRAFICO|"))
-        .join("\n");
-
-      /*
-       * IMPORTANTE:
-       * Las tablas se convierten aquí manualmente.
-       * Así NO dependemos de que el navegador interprete
-       * correctamente el Markdown de la IA.
-       */
-      const lineas = texto.split(/\r?\n/);
-      const salida = [];
-      let i = 0;
-
-      while (i < lineas.length) {
-
-        const linea = lineas[i].trim();
-
-        // Detectar una tabla Markdown:
-        // | Columna | Columna |
-        // |---|---|
-        if (
-          i + 1 < lineas.length &&
-          linea.includes("|") &&
-          /^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lineas[i + 1])
-        ) {
-
-          const encabezados =
-            dividirFilaMarkdown(lineas[i]);
-
-          i += 2;
-
-          const filas = [];
-
-          while (
-            i < lineas.length &&
-            lineas[i].trim().includes("|") &&
-            lineas[i].trim() !== ""
-          ) {
-            filas.push(
-              dividirFilaMarkdown(lineas[i])
-            );
-            i++;
-          }
-
-          salida.push(
-            construirTablaHTML(encabezados, filas)
-          );
-
-          continue;
-        }
-
-        salida.push(lineas[i]);
-        i++;
-      }
-
-      const textoSinTablas = salida
-        .filter(item => !item.trim().startsWith("<!--TABLA_HTML_"))
-        .join("\n");
-
-      /*
-       * Los bloques HTML de tabla se mantienen mediante marcadores.
-       */
-      const tablasHTML =
-        salida.filter(item =>
-          item.trim().startsWith("<!--TABLA_HTML_")
-        );
-
-      let htmlResultado = "";
-
-      if (
-        window.marked &&
-        typeof window.marked.parse === "function"
-      ) {
-        htmlResultado =
-          marked.parse(textoSinTablas, {
-            gfm: true,
-            breaks: true
-          });
-      } else {
-        htmlResultado =
-          convertirTextoBasico(textoSinTablas);
-      }
-
-      // Insertar las tablas reales en el lugar correspondiente.
-      tablasHTML.forEach((tabla, indice) => {
-
-        const marcador =
-          `<!--TABLA_HTML_${indice}-->`;
-
-        htmlResultado =
-          htmlResultado.replace(
-            marcador,
-            tabla.replace(
-              `<!--TABLA_HTML_${indice}-->`,
-              ""
-            )
-          );
-      });
-
-      return htmlResultado;
-    }
-
-
-    function dividirFilaMarkdown(fila) {
-
-      let texto = fila.trim();
-
-      if (texto.startsWith("|"))
-        texto = texto.substring(1);
-
-      if (texto.endsWith("|"))
-        texto = texto.substring(0, texto.length - 1);
-
-      return texto
-        .split("|")
-        .map(celda => celda.trim());
-    }
-
-
-    function construirTablaHTML(encabezados, filas) {
-
-      const indice =
-        document.querySelectorAll(".tabla-reporte").length;
-
-      let htmlTabla =
-        `<!--TABLA_HTML_${indice}-->
-         <div class="tabla-contenedor">
-         <table class="tabla-reporte">
-         <thead><tr>`;
-
-      encabezados.forEach(encabezado => {
-
-        htmlTabla +=
-          `<th>${formatInline(encabezado)}</th>`;
-
-      });
-
-      htmlTabla +=
-        `</tr></thead><tbody>`;
-
-      filas.forEach(fila => {
-
-        htmlTabla += "<tr>";
-
-        encabezados.forEach((_, columna) => {
-
-          const valor =
-            fila[columna] !== undefined
-              ? fila[columna]
-              : "";
-
-          htmlTabla +=
-            `<td>${formatInline(valor)}</td>`;
-
+      // marked.js interpreta Markdown,
+      // incluyendo títulos, listas y tablas.
+      let html =
+        marked.parse(textoLimpio, {
+          gfm: true,
+          breaks: true
         });
 
-        htmlTabla += "</tr>";
-      });
+      // Envolver cada tabla para permitir desplazamiento horizontal.
+      html =
+        html.replace(
+          /<table>/g,
+          '<div class="tabla-contenedor"><table class="tabla-reporte">'
+        );
 
-      htmlTabla +=
-        "</tbody></table></div>";
+      html =
+        html.replace(
+          /<\/table>/g,
+          "</table></div>"
+        );
 
-      return htmlTabla;
-    }
+      // Formatear automáticamente columnas numéricas y fechas.
+      const temporal =
+        document.createElement("div");
 
+      temporal.innerHTML = html;
 
-    function convertirTextoBasico(texto) {
+      temporal
+        .querySelectorAll("table")
+        .forEach(tabla => {
 
-      return texto
-        .split(/\r?\n/)
-        .map(linea => {
+          const encabezados =
+            Array.from(
+              tabla.querySelectorAll("thead th")
+            ).map(th =>
+              normalizarTexto(th.textContent)
+            );
 
-          const limpia = linea.trim();
+          tabla
+            .querySelectorAll("tbody tr")
+            .forEach(fila => {
 
-          if (!limpia)
-            return "";
+              Array.from(fila.children)
+                .forEach((celda, indice) => {
 
-          if (limpia.startsWith("### "))
-            return `<h3>${formatInline(limpia.substring(4))}</h3>`;
+                  const nombre =
+                    encabezados[indice] || "";
 
-          if (limpia.startsWith("## "))
-            return `<h2>${formatInline(limpia.substring(3))}</h2>`;
+                  const valor =
+                    celda.textContent.trim();
 
-          if (limpia.startsWith("# "))
-            return `<h1>${formatInline(limpia.substring(2))}</h1>`;
+                  if (
+                    nombre.includes("costo") ||
+                    nombre.includes("usd") ||
+                    nombre.includes("monto") ||
+                    nombre.includes("precio")
+                  ) {
 
-          if (limpia.startsWith("- "))
-            return `<p>• ${formatInline(limpia.substring(2))}</p>`;
+                    const numero =
+                      Number(
+                        valor.replace(/[$,\s]/g, "")
+                      );
 
-          return `<p>${formatInline(limpia)}</p>`;
+                    if (!isNaN(numero)) {
 
-        })
-        .join("");
+                      celda.textContent =
+                        new Intl.NumberFormat(
+                          "en-US",
+                          {
+                            style: "currency",
+                            currency: "USD",
+                            maximumFractionDigits: 0
+                          }
+                        ).format(numero);
+
+                      celda.classList.add("numero");
+                    }
+                  }
+
+                  if (nombre.includes("fecha")) {
+
+                    const fecha =
+                      new Date(valor);
+
+                    if (!isNaN(fecha.getTime())) {
+
+                      celda.textContent =
+                        new Intl.DateTimeFormat(
+                          "es-ES",
+                          {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric"
+                          }
+                        ).format(fecha);
+
+                      celda.classList.add("fecha");
+                    }
+                  }
+
+                  if (
+                    nombre.includes("numero") ||
+                    nombre.includes("cantidad")
+                  ) {
+                    celda.classList.add("numero");
+                  }
+
+                });
+            });
+        });
+
+      return temporal.innerHTML;
     }
 
 
@@ -789,7 +777,6 @@
         );
 
       return seguro;
-
     }
 
 
@@ -1049,10 +1036,16 @@
               font-family: Arial, sans-serif;
               padding: 35px;
               color: #222;
+              line-height: 1.6;
             }
 
             h1, h2, h3 {
               color: #0b5d4b;
+            }
+
+            h1 {
+              border-bottom: 3px solid #0b5d4b;
+              padding-bottom: 10px;
             }
 
             table {
@@ -1064,13 +1057,13 @@
             th {
               background: #0b5d4b;
               color: white;
-              padding: 9px;
+              padding: 10px;
               text-align: left;
             }
 
             td {
               border: 1px solid #ddd;
-              padding: 8px;
+              padding: 9px;
             }
 
             tr:nth-child(even) {
@@ -1312,9 +1305,12 @@
 
       document.body.appendChild(enlace);
 
+
       enlace.click();
 
+
       enlace.remove();
+
 
       URL.revokeObjectURL(url);
 
