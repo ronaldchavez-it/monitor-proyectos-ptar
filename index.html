@@ -740,13 +740,15 @@ function crearGrafico(texto) {
     window.miGrafico = null;
   }
 
-  const lineaGrafico = texto
+  const lineasGrafico = texto
     .split("\n")
-    .find(linea => linea.trim().startsWith("GRAFICO|"));
+    .filter(linea => linea.trim().startsWith("GRAFICO|"));
 
-  if (!lineaGrafico) return;
+  if (!lineasGrafico.length) return;
 
-  const partes = lineaGrafico.trim().split("|");
+  const lineaGrafico = lineasGrafico[0].trim();
+
+  const partes = lineaGrafico.split("|");
 
   if (partes.length < 4) return;
 
@@ -762,21 +764,20 @@ function crearGrafico(texto) {
 
   for (let i = 3; i < partes.length; i++) {
 
-    const elemento = partes[i].split(":");
+    const posicion = partes[i].lastIndexOf(":");
 
-    if (elemento.length >= 2) {
+    if (posicion === -1) continue;
 
-      labels.push(elemento[0]);
+    const etiqueta = partes[i].substring(0, posicion);
+    const valorTexto = partes[i].substring(posicion + 1);
 
-      valores.push(
-        Number(
-          elemento
-            .slice(1)
-            .join(":")
-            .replace(/[$,\s]/g, "")
-        )
-      );
+    const valor = Number(
+      valorTexto.replace(/[$,\s]/g, "")
+    );
 
+    if (!isNaN(valor)) {
+      labels.push(etiqueta);
+      valores.push(valor);
     }
   }
 
@@ -790,10 +791,8 @@ function crearGrafico(texto) {
       labels: labels,
 
       datasets: [{
-        label: "Costo estimado USD",
+        label: titulo,
         data: valores,
-        backgroundColor: "rgba(11, 93, 75, 0.65)",
-        borderColor: "#0b5d4b",
         borderWidth: 2
       }]
     },
